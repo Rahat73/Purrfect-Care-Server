@@ -17,6 +17,7 @@ const postSchema = new Schema<TPost>({
   downvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   comments: [commentSchema],
   images: [{ type: String }],
+  isPublished: { type: Boolean, default: true },
 });
 
 export const Post = model<TPost>('Post', postSchema);

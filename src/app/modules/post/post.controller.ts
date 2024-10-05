@@ -50,11 +50,11 @@ const getMyPosts = catchAsync(async (req, res) => {
   });
 });
 
-const deletePost = catchAsync(async (req, res) => {
+const unpublishPost = catchAsync(async (req, res) => {
   const { email } = req.user;
   const { postId } = req.params;
 
-  const result = await PostServices.deletePostFromDB(email, postId);
+  const result = await PostServices.unpublishPostFromDB(email, postId);
 
   sendResponse(res, {
     statusCode: 200,
@@ -113,7 +113,7 @@ export const PostControllers = {
   getAllPosts,
   getPostById,
   getMyPosts,
-  deletePost,
+  unpublishPost,
   updatePost,
   votePost,
   addComment,

@@ -15,4 +15,5 @@ export type TPost = {
   downvotes: Types.ObjectId[];
   comments: TComment[];
   images?: string[];
+  isPublished: boolean;
 };

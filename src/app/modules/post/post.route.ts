@@ -22,9 +22,28 @@ router.get(
   PostControllers.getAllPosts,
 );
 
+router.get(
+  '/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.getPostById,
+);
+
+router.get(
+  '/me',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.getMyPosts,
+);
+
+router.put(
+  '/unpublish/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.unpublishPost,
+);
+
 router.put(
   '/:postId',
   auth(UserRole.admin, UserRole.user),
+  validationHandler(PostValidations.updatePostSchema),
   PostControllers.updatePost,
 );
 
