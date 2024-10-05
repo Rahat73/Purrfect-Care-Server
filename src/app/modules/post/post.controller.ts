@@ -50,16 +50,16 @@ const getMyPosts = catchAsync(async (req, res) => {
   });
 });
 
-const unpublishPost = catchAsync(async (req, res) => {
+const changeVisibilityPost = catchAsync(async (req, res) => {
   const { email } = req.user;
   const { postId } = req.params;
 
-  const result = await PostServices.unpublishPostFromDB(email, postId);
+  const result = await PostServices.changeVisibilityPostFromDB(email, postId);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Post deleted successfully',
+    message: 'Post visiblity changed successfully',
     data: result,
   });
 });
@@ -113,7 +113,7 @@ export const PostControllers = {
   getAllPosts,
   getPostById,
   getMyPosts,
-  unpublishPost,
+  changeVisibilityPost,
   updatePost,
   votePost,
   addComment,

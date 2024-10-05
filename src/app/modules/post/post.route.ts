@@ -35,9 +35,9 @@ router.get(
 );
 
 router.put(
-  '/unpublish/:postId',
+  '/change-visibility/:postId',
   auth(UserRole.admin, UserRole.user),
-  PostControllers.unpublishPost,
+  PostControllers.changeVisibilityPost,
 );
 
 router.put(

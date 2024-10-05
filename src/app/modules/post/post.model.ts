@@ -12,7 +12,7 @@ const postSchema = new Schema<TPost>({
   title: { type: String, required: true },
   content: { type: String, required: true },
   category: { type: String, enum: ['Tip', 'Story'], required: true },
-  isPremium: { type: Boolean, default: false },
+  isPremium: { type: Number, default: 0 },
   upvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   downvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   comments: [commentSchema],

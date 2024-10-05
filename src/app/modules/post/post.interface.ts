@@ -10,7 +10,7 @@ export type TPost = {
   title: string;
   content: string;
   category: 'Tip' | 'Story';
-  isPremium: boolean;
+  isPremium: number;
   upvotes: Types.ObjectId[];
   downvotes: Types.ObjectId[];
   comments: TComment[];

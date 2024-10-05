@@ -49,7 +49,7 @@ const getMyPostsFromDB = async (email: string) => {
   return result;
 };
 
-const unpublishPostFromDB = async (email: string, postId: string) => {
+const changeVisibilityPostFromDB = async (email: string, postId: string) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(404, 'User not found');
@@ -61,13 +61,16 @@ const unpublishPostFromDB = async (email: string, postId: string) => {
   }
 
   if (user.role !== 'admin' && post.author.toString() !== user._id.toString()) {
-    throw new AppError(403, 'You are not authorized to delete this post');
+    throw new AppError(
+      403,
+      'You are not authorized to change visibility of this post',
+    );
   }
 
   const result = await Post.findByIdAndUpdate(
     postId,
     {
-      isPublished: false,
+      isPublished: !post.isPublished,
     },
     { new: true },
   );
@@ -199,7 +202,7 @@ export const PostServices = {
   getAllPostsFromDB,
   getPostByIdFromDB,
   getMyPostsFromDB,
-  unpublishPostFromDB,
+  changeVisibilityPostFromDB,
   updatePostIntoDB,
   votePost,
   addComment,
