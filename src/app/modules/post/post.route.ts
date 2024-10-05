@@ -16,10 +16,28 @@ router.post(
   PostControllers.createPost,
 );
 
+router.get(
+  '/',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.getAllPosts,
+);
+
+router.put(
+  '/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.updatePost,
+);
+
 router.put(
   '/vote/:postId',
   auth(UserRole.admin, UserRole.user),
   PostControllers.votePost,
+);
+
+router.put(
+  '/comment/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.addComment,
 );
 
 export const PostRoutes = router;

@@ -20,7 +20,14 @@ const updatePostSchema = z.object({
   }),
 });
 
+const addCommentSchema = z.object({
+  body: z.object({
+    content: z.string().min(1, 'Content is required'),
+  }),
+});
+
 export const PostValidations = {
   createPostSchema,
   updatePostSchema,
+  addCommentSchema,
 };

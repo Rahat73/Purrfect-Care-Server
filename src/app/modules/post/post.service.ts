@@ -1,3 +1,4 @@
+import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { TPost } from './post.interface';
@@ -17,6 +18,83 @@ const createPostIntoDB = async (email: string, payload: TPost) => {
 
   // Create the post in the database
   const result = await Post.create(newPost);
+
+  return result;
+};
+
+const getAllPostsFromDB = async (query: Record<string, unknown>) => {
+  const postQuery = new QueryBuilder(User.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await postQuery.modelQuery;
+
+  return result;
+};
+
+const getPostByIdFromDB = async (postId: string) => {
+  const result = await Post.findById(postId);
+  return result;
+};
+
+const getMyPostsFromDB = async (email: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const result = await Post.find({ author: user._id });
+  return result;
+};
+
+const deletePostFromDB = async (email: string, postId: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  if (post.author.toString() !== user._id.toString()) {
+    throw new AppError(403, 'You are not authorized to delete this post');
+  }
+
+  const result = await Post.findByIdAndDelete(postId);
+
+  return result;
+};
+
+const updatePostIntoDB = async (
+  email: string,
+  postId: string,
+  payload: TPost,
+) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  if (post.author.toString() !== user._id.toString()) {
+    throw new AppError(403, 'You are not authorized to update this post');
+  }
+
+  const result = await Post.findByIdAndUpdate(
+    postId,
+    {
+      ...payload,
+    },
+    { new: true },
+  );
 
   return result;
 };
@@ -83,7 +161,40 @@ const votePost = async (email: string, postId: string, voteType: string) => {
   return result;
 };
 
+const addComment = async (email: string, postId: string, content: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  const newComment = {
+    author: user._id,
+    content,
+  };
+
+  const result = await Post.findByIdAndUpdate(
+    postId,
+    {
+      $push: { comments: newComment },
+    },
+    { new: true },
+  );
+
+  return result;
+};
+
 export const PostServices = {
   createPostIntoDB,
+  getAllPostsFromDB,
+  getPostByIdFromDB,
+  getMyPostsFromDB,
+  deletePostFromDB,
+  updatePostIntoDB,
   votePost,
+  addComment,
 };
