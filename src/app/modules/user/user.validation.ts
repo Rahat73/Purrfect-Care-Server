@@ -15,9 +15,6 @@ export const createUserValidationSchema = z.object({
     // }),
     profilePicture: z.string().optional(),
     bio: z.string().optional(),
-    followers: z.array(z.string()).optional(),
-    following: z.array(z.string()).optional(),
-    premiumPostsPurchased: z.array(z.string()).optional(),
   }),
 });
 
@@ -34,9 +31,6 @@ export const updateUserValidationSchema = z.object({
     }),
     profilePicture: z.string().optional(),
     bio: z.string().optional(),
-    followers: z.array(z.string()).optional(),
-    following: z.array(z.string()).optional(),
-    premiumPostsPurchased: z.array(z.string()).optional(),
     isBlocked: z.boolean().optional(),
   }),
 });
