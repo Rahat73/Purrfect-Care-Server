@@ -4,6 +4,7 @@ import { UserRole } from './user.constant';
 export type TUserRole = keyof typeof UserRole;
 
 export interface TUser extends Document {
+  _id?: Types.ObjectId;
   name: string;
   email: string;
   password: string;

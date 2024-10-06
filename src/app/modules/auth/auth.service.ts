@@ -13,7 +13,25 @@ const signUpUser = async (payload: TUser) => {
   }
 
   const result = await User.create(payload);
-  return result;
+
+  //create token and sent to the  client
+  const jwtPayload = {
+    _id: result._id,
+    name: result.name,
+    email: result.email,
+    role: result.role,
+    profilePicture: result.profilePicture,
+  };
+
+  const access_token = jwt.sign(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    { expiresIn: config.jwt_access_expires_in as string },
+  );
+
+  const userObject = (user as IUserDocument).toObject();
+
+  return { user: userObject, access_token };
 };
 
 const loginUser = async (payload: TLoginUser) => {
@@ -32,10 +50,18 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(401, 'Incorrect password');
   }
 
+  //check if user is blocked
+  if (user.isBlocked) {
+    throw new AppError(401, 'Your account has been blocked');
+  }
+
   //create token and sent to the  client
   const jwtPayload = {
+    _id: user._id,
+    name: user.name,
     email: user.email,
     role: user.role,
+    profilePicture: user.profilePicture,
   };
 
   const access_token = jwt.sign(
