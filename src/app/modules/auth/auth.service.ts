@@ -36,7 +36,7 @@ const signUpUser = async (payload: TUser) => {
 
 const loginUser = async (payload: TLoginUser) => {
   //check if user exists
-  const user = await User.isUserExistsByEmail(payload.email);
+  const user = (await User.isUserExistsByEmail(payload.email)) as IUserDocument;
   if (!user) {
     throw new AppError(404, 'No user found with this email');
   }

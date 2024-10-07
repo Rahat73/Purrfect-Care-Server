@@ -18,7 +18,7 @@ router.post(
 
 router.get(
   '/',
-  auth(UserRole.admin, UserRole.user),
+  // auth(UserRole.admin, UserRole.user),
   PostControllers.getAllPosts,
 );
 

@@ -8,7 +8,12 @@ import router from './app/routes';
 
 const app: Application = express();
 app.use(express.json());
-app.use(cors({ origin: ['https://localhost:3000'], credentials: true }));
+app.use(
+  cors({
+    origin: ['https://purrfect-care-client.vercel.app'],
+    credentials: true,
+  }),
+);
 
 app.use('/api', router);
 

@@ -23,7 +23,7 @@ const createPostIntoDB = async (email: string, payload: TPost) => {
 };
 
 const getAllPostsFromDB = async (query: Record<string, unknown>) => {
-  const postQuery = new QueryBuilder(User.find(), query)
+  const postQuery = new QueryBuilder(Post.find().populate('author'), query)
     .filter()
     .sort()
     .paginate()
@@ -35,7 +35,9 @@ const getAllPostsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getPostByIdFromDB = async (postId: string) => {
-  const result = await Post.findById(postId);
+  const result = await Post.findById(postId)
+    .populate('author')
+    .populate('comments.author');
   return result;
 };
 
