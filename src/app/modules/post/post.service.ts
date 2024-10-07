@@ -29,9 +29,11 @@ const getAllPostsFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
+  const meta = await postQuery.countTotal();
+
   const result = await postQuery.modelQuery;
 
-  return result;
+  return { result, meta };
 };
 
 const getPostByIdFromDB = async (postId: string) => {
@@ -142,7 +144,13 @@ const votePost = async (email: string, postId: string, voteType: string) => {
         { new: true },
       );
     } else {
-      throw new AppError(400, 'You have already upvoted this post');
+      result = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: { upvotes: user._id },
+        },
+        { new: true },
+      );
     }
   } else if (voteType === 'downvote') {
     if (post.upvotes.includes(user._id)) {
@@ -163,7 +171,13 @@ const votePost = async (email: string, postId: string, voteType: string) => {
         { new: true },
       );
     } else {
-      throw new AppError(400, 'You have already downvoted this post');
+      result = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: { downvotes: user._id },
+        },
+        { new: true },
+      );
     }
   } else {
     throw new AppError(400, 'Invalid vote type');

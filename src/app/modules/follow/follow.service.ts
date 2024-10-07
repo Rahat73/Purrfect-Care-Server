@@ -10,7 +10,7 @@ const followUser = async (email: string, followingId: Types.ObjectId) => {
   }
 
   // Check if the user is trying to follow themselves
-  if (user._id === followingId) {
+  if (user._id.toString() === followingId.toString()) {
     throw new AppError(400, 'You cannot follow yourself');
   }
 
@@ -21,9 +21,9 @@ const followUser = async (email: string, followingId: Types.ObjectId) => {
   }
 
   // Check if already following
-  if (user.following.includes(followingId)) {
-    throw new AppError(400, 'You are already following this user');
-  }
+  // if (user.following.includes(followingId)) {
+  //   throw new AppError(400, 'You are already following this user');
+  // }
 
   const session = await startSession();
 
@@ -31,23 +31,24 @@ const followUser = async (email: string, followingId: Types.ObjectId) => {
     session.startTransaction();
 
     //Add followingId to the user's following list
+    const isFollowing = user.following.includes(followingId);
     const result = await User.findByIdAndUpdate(
       user._id,
-      {
-        following: [...user.following, followingId],
-      },
+      isFollowing
+        ? { $pull: { following: followingId } }
+        : { $push: { following: followingId } },
       {
         new: true,
         session,
       },
     );
 
-    //Add current user to the target user's followers list
+    //Remove user from followingId's followers list
     await User.findByIdAndUpdate(
       followingId,
-      {
-        followers: [...targetUser.followers, user._id],
-      },
+      isFollowing
+        ? { $pull: { followers: user._id } }
+        : { $push: { followers: user._id } },
       { session },
     );
 
