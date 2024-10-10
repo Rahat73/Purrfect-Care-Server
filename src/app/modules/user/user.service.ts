@@ -28,6 +28,15 @@ const updateProfileIntoDB = async (email: string, payload: Partial<TUser>) => {
 };
 
 const makeAdmin = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  if (user?.isBlocked) {
+    throw new AppError(403, 'User is blocked');
+  }
+
   const result = await User.findByIdAndUpdate(
     userId,
     { role: 'admin' },
@@ -39,12 +48,12 @@ const makeAdmin = async (userId: string) => {
 const blockUserFromDB = async (userId: string) => {
   const user = await User.findById(userId);
   if (user?.role === 'admin') {
-    throw new AppError(400, 'Admins can not be deleted');
+    throw new AppError(400, 'Admins can not be blocked');
   }
 
   const result = await User.findByIdAndUpdate(
     userId,
-    { isBlocked: true },
+    { isBlocked: user?.isBlocked ? false : true },
     { new: true },
   );
   return result;

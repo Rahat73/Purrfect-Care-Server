@@ -213,6 +213,85 @@ const addComment = async (email: string, postId: string, content: string) => {
   return result;
 };
 
+const editComment = async (
+  email: string,
+  postId: string,
+  commentId: string,
+  content: string,
+) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  // Find the comment within the post's comments array by commentId
+  const comment = post.comments.find((comment) =>
+    comment?._id!.equals(commentId),
+  );
+
+  if (!comment) {
+    throw new AppError(404, 'Comment not found');
+  }
+
+  // Check if the user is the author of the comment
+  if (!comment.author.equals(user._id)) {
+    throw new AppError(403, 'You are not authorized to edit this comment');
+  }
+
+  // If the user is the author, update the comment's content
+  comment.content = content;
+
+  // Save the post document after the comment update
+  await post.save();
+
+  return comment;
+};
+
+const deleteComment = async (
+  email: string,
+  postId: string,
+  commentId: string,
+) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  // Find the comment within the post's comments array by commentId
+  const comment = post.comments.find((comment) =>
+    comment?._id!.equals(commentId),
+  );
+
+  if (!comment) {
+    throw new AppError(404, 'Comment not found');
+  }
+
+  // Check if the user is the author of the comment
+  if (!comment.author.equals(user._id)) {
+    throw new AppError(403, 'You are not authorized to delete this comment');
+  }
+
+  // If the user is the author, delete the comment
+  post.comments = post.comments.filter(
+    (comment) => !comment?._id!.equals(commentId),
+  );
+
+  // Save the post document after the comment deletion
+  await post.save();
+
+  return comment;
+};
+
 export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
@@ -222,4 +301,6 @@ export const PostServices = {
   updatePostIntoDB,
   votePost,
   addComment,
+  editComment,
+  deleteComment,
 };

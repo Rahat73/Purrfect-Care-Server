@@ -22,7 +22,11 @@ router.put(
   UserControllers.updateProfile,
 );
 
-router.put('/:userId', auth(UserRole.admin), UserControllers.makeAdmin);
+router.put(
+  '/make-admin/:userId',
+  auth(UserRole.admin),
+  UserControllers.makeAdmin,
+);
 
 router.put('/block/:userId', auth(UserRole.admin), UserControllers.blockUser);
 

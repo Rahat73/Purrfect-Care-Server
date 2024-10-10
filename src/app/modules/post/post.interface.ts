@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 
 export type TComment = {
+  _id?: Types.ObjectId;
   author: Types.ObjectId;
   content: string;
 };

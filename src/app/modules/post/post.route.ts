@@ -59,4 +59,16 @@ router.put(
   PostControllers.addComment,
 );
 
+router.put(
+  '/comment/edit/:postId/:commentId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.editComment,
+);
+
+router.delete(
+  '/comment/delete/:postId/:commentId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.deleteComment,
+);
+
 export const PostRoutes = router;

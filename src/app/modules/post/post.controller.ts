@@ -108,6 +108,40 @@ const addComment = catchAsync(async (req, res) => {
   });
 });
 
+const editComment = catchAsync(async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { email } = req.user;
+  const { content } = req.body;
+
+  const result = await PostServices.editComment(
+    email,
+    postId,
+    commentId,
+    content,
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment edited successfully',
+    data: result,
+  });
+});
+
+const deleteComment = catchAsync(async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { email } = req.user;
+
+  const result = await PostServices.deleteComment(email, postId, commentId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment deleted successfully',
+    data: result,
+  });
+});
+
 export const PostControllers = {
   createPost,
   getAllPosts,
@@ -117,4 +151,6 @@ export const PostControllers = {
   updatePost,
   votePost,
   addComment,
+  editComment,
+  deleteComment,
 };
