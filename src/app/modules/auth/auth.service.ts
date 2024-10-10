@@ -4,6 +4,7 @@ import { TUser } from '../user/user.interface';
 import { IUserDocument, User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const signUpUser = async (payload: TUser) => {
   //check if user exists
@@ -29,7 +30,7 @@ const signUpUser = async (payload: TUser) => {
     { expiresIn: config.jwt_access_expires_in as string },
   );
 
-  const userObject = (user as IUserDocument).toObject();
+  const userObject = (result as IUserDocument).toObject();
 
   return { user: userObject, access_token };
 };
@@ -79,7 +80,40 @@ const loginUser = async (payload: TLoginUser) => {
   return { user: userObject, access_token };
 };
 
+const changePassword = async (
+  email: string,
+  payload: Record<string, string>,
+) => {
+  // checking if the user is exist
+  const user = await User.isUserExistsByEmail(email);
+
+  if (!user) {
+    throw new AppError(404, 'This user is not found !');
+  }
+
+  // checking if the user is blocked
+  if (user?.isBlocked) {
+    throw new AppError(403, 'This user is blocked ! !');
+  }
+
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email,
+    },
+    {
+      password: newHashedPassword,
+    },
+  );
+};
+
 export const AuthServices = {
   signUpUser,
   loginUser,
+  changePassword,
 };

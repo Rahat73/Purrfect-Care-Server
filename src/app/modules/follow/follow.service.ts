@@ -63,6 +63,18 @@ const followUser = async (email: string, followingId: Types.ObjectId) => {
   }
 };
 
+const getFollowFromDB = async (email: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+  const result = await User.findById(user._id, 'followers following')
+    .populate('following', '_id name profilePicture')
+    .populate('followers', '_id name profilePicture');
+  return result;
+};
+
 export const FollowServices = {
   followUser,
+  getFollowFromDB,
 };

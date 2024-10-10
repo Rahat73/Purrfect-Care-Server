@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { UserRole } from './user.constant';
 
 // Zod schema for User creation
 export const createUserValidationSchema = z.object({
@@ -26,9 +25,7 @@ export const updateUserValidationSchema = z.object({
     //   .string()
     //   .optional()
     //   .min(6, 'Password must be at least 6 characters long'),
-    role: z.enum(Object.values(UserRole) as [string, ...string[]], {
-      message: 'Invalid role',
-    }),
+
     profilePicture: z.string().optional(),
     bio: z.string().optional(),
     isBlocked: z.boolean().optional(),

@@ -15,6 +15,19 @@ const followUser = catchAsync(async (req, res) => {
   });
 });
 
+const getFollow = catchAsync(async (req, res) => {
+  const { email } = req.user;
+  const result = await FollowServices.getFollowFromDB(email);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Follow retrieved successfully',
+    data: result,
+  });
+});
+
 export const FollowControllers = {
   followUser,
+  getFollow,
 };

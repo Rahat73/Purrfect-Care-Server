@@ -23,15 +23,15 @@ router.get(
 );
 
 router.get(
-  '/:postId',
-  auth(UserRole.admin, UserRole.user),
-  PostControllers.getPostById,
-);
-
-router.get(
   '/me',
   auth(UserRole.admin, UserRole.user),
   PostControllers.getMyPosts,
+);
+
+router.get(
+  '/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.getPostById,
 );
 
 router.put(

@@ -15,4 +15,10 @@ router.put(
   FollowControllers.followUser,
 );
 
+router.get(
+  '/me',
+  auth(UserRole.admin, UserRole.user),
+  FollowControllers.getFollow,
+);
+
 export const FollowRoutes = router;
