@@ -21,9 +21,9 @@ export const initiatePayment = async ({
     const response = await axios.post(config.payment_url!, {
       store_id: config.store_id,
       tran_id,
-      success_url: `http://localhost:5000/api/payment/confirmation?trxId=${tran_id}&uid=${user_id}&pid=${post_id}&status=successful`,
-      fail_url: `http://localhost:5000/api/payment/confirmation?trxId=${tran_id}&uid=${user_id}&pid=${post_id}&status=failed`,
-      cancel_url: 'http://localhost:3000',
+      success_url: `https://purrfect-care-server.vercel.app/api/payment/confirmation?trxId=${tran_id}&uid=${user_id}&pid=${post_id}&status=successful`,
+      fail_url: `https://purrfect-care-server.vercel.app/api/payment/confirmation?trxId=${tran_id}&uid=${user_id}&pid=${post_id}&status=failed`,
+      cancel_url: 'https://purrfect-care-client.vercel.app',
       amount,
       currency: 'BDT',
       signature_key: config.signature_key,
