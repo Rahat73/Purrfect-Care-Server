@@ -78,6 +78,20 @@ const updatePost = catchAsync(async (req, res) => {
   });
 });
 
+const deletePost = catchAsync(async (req, res) => {
+  const { email } = req.user;
+  const { postId } = req.params;
+
+  const result = await PostServices.deletePostFromDB(email, postId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Post deleted successfully',
+    data: result,
+  });
+});
+
 const votePost = catchAsync(async (req, res) => {
   const { postId } = req.params;
   const { email } = req.user;
@@ -149,6 +163,7 @@ export const PostControllers = {
   getMyPosts,
   changeVisibilityPost,
   updatePost,
+  deletePost,
   votePost,
   addComment,
   editComment,

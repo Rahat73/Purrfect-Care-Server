@@ -47,6 +47,12 @@ router.put(
   PostControllers.updatePost,
 );
 
+router.delete(
+  '/:postId',
+  auth(UserRole.admin, UserRole.user),
+  PostControllers.deletePost,
+);
+
 router.put(
   '/vote/:postId',
   auth(UserRole.admin, UserRole.user),

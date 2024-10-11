@@ -97,7 +97,7 @@ const updatePostIntoDB = async (
     throw new AppError(404, 'Post not found');
   }
 
-  if (user.role !== 'admin' && post.author.toString() !== user._id.toString()) {
+  if (post.author.toString() !== user._id.toString()) {
     throw new AppError(403, 'You are not authorized to update this post');
   }
 
@@ -108,6 +108,26 @@ const updatePostIntoDB = async (
     },
     { new: true },
   );
+
+  return result;
+};
+
+const deletePostFromDB = async (email: string, postId: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError(404, 'Post not found');
+  }
+
+  if (post.author.toString() !== user._id.toString()) {
+    throw new AppError(403, 'You are not authorized to delete this post');
+  }
+
+  const result = await Post.findByIdAndDelete(postId);
 
   return result;
 };
@@ -299,6 +319,7 @@ export const PostServices = {
   getMyPostsFromDB,
   changeVisibilityPostFromDB,
   updatePostIntoDB,
+  deletePostFromDB,
   votePost,
   addComment,
   editComment,
