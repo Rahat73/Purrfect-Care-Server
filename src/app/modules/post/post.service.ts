@@ -1,6 +1,7 @@
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
+import { postSearchableFields } from './post.constant';
 import { TPost } from './post.interface';
 import { Post } from './post.model';
 
@@ -24,6 +25,7 @@ const createPostIntoDB = async (email: string, payload: TPost) => {
 
 const getAllPostsFromDB = async (query: Record<string, unknown>) => {
   const postQuery = new QueryBuilder(Post.find().populate('author'), query)
+    .search(postSearchableFields)
     .filter()
     .sort()
     .paginate()

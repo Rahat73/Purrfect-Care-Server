@@ -12,6 +12,8 @@
         height: 100vh;
         margin: 0;
         font-family: Arial, sans-serif;
+        background-color: black;
+        color: white;
       }
       .payment-container {
         border: 2px solid #ccc;
@@ -23,7 +25,8 @@
   <body>
     <div class="payment-container">
       <h1>{{message}}</h1>
-
+      <h3>Post Title : <i>{{post_title}}</i></h3>
+      <h2>Thank you <i>{{cus_name}}</i>, for purchasing the post</h2>
       <a style="margin-top: 10px" href="https://purrfect-care-client.vercel.app"
         >Go Back</a
       >

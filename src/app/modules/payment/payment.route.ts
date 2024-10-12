@@ -13,4 +13,6 @@ router.post(
 
 router.post('/confirmation', PaymentControllers.purchaseConfirmation);
 
+router.get('/', auth(UserRole.admin), PaymentControllers.getAllPayments);
+
 export const PaymentRoutes = router;
