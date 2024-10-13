@@ -24,6 +24,17 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
+const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  const result = await AuthServices.forgotPassword(email);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Reset link sent to your email. Check spam box if not found',
+    data: result,
+  });
+});
+
 const changePassword = catchAsync(async (req, res) => {
   const { email } = req.user;
 
@@ -31,7 +42,7 @@ const changePassword = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Password changed succesful!',
+    message: 'Password changed succesfully!',
     data: result,
   });
 });
@@ -39,5 +50,6 @@ const changePassword = catchAsync(async (req, res) => {
 export const AuthControllers = {
   signUpUser,
   loginUser,
+  forgotPassword,
   changePassword,
 };

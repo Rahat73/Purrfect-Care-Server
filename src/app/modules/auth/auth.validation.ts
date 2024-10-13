@@ -7,6 +7,12 @@ const loginValidationSchema = z.object({
   }),
 });
 
+const forgotPasswordValidationSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email address'),
+  }),
+});
+
 const changePasswordValidationSchema = z.object({
   body: z.object({
     newPassword: z
@@ -19,5 +25,6 @@ const changePasswordValidationSchema = z.object({
 
 export const AuthValidation = {
   loginValidationSchema,
+  forgotPasswordValidationSchema,
   changePasswordValidationSchema,
 };

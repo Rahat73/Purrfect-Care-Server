@@ -1,9 +1,10 @@
-import dotenv from "dotenv";
-import path from "path";
+import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: path.join(process.cwd(), ".env") });
+dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 export default {
+  NODE_ENV: process.env.NODE_ENV,
   port: process.env.PORT,
   database_url: process.env.DATABASE_URL,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
@@ -13,4 +14,7 @@ export default {
   signature_key: process.env.SIGNATURE_KEY,
   payment_url: process.env.PAYMENT_URL,
   payment_verification_url: process.env.PAYMENT_VERIFICATION_URL,
+  reset_pass_ui_link: process.env.RESET_PASS_UI_LINK,
+  google_acc: process.env.GOOGLE_ACC,
+  google_app_pass: process.env.GOOGLE_APP_PASS,
 };

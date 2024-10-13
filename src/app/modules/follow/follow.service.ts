@@ -69,8 +69,8 @@ const getFollowFromDB = async (email: string) => {
     throw new AppError(404, 'User not found');
   }
   const result = await User.findById(user._id, 'followers following')
-    .populate('following', '_id name profilePicture')
-    .populate('followers', '_id name profilePicture');
+    .populate('following', '_id name email profilePicture')
+    .populate('followers', '_id name email profilePicture');
   return result;
 };
 

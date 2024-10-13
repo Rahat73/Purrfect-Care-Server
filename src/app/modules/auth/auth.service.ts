@@ -5,6 +5,7 @@ import { IUserDocument, User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { sendEmail } from '../../utils/send-email';
 
 const signUpUser = async (payload: TUser) => {
   //check if user exists
@@ -80,6 +81,38 @@ const loginUser = async (payload: TLoginUser) => {
   return { user: userObject, access_token };
 };
 
+const forgotPassword = async (userId: string) => {
+  // checking if the user is exist
+  const user = (await User.isUserExistsByEmail(userId)) as IUserDocument;
+
+  if (!user) {
+    throw new AppError(404, 'No user found with this email');
+  }
+
+  // checking if the user is blocked
+  const userStatus = user?.isBlocked;
+
+  if (userStatus) {
+    throw new AppError(401, 'Your account has been blocked');
+  }
+
+  const jwtPayload = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    profilePicture: user.profilePicture,
+  };
+
+  const resetToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+    expiresIn: '10m',
+  });
+
+  const resetUILink = `${config.reset_pass_ui_link}?email=${user.email}&token=${resetToken} `;
+
+  await sendEmail(user.email, resetUILink);
+};
+
 const changePassword = async (
   email: string,
   payload: Record<string, string>,
@@ -115,5 +148,6 @@ const changePassword = async (
 export const AuthServices = {
   signUpUser,
   loginUser,
+  forgotPassword,
   changePassword,
 };
